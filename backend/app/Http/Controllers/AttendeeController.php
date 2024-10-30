@@ -49,11 +49,8 @@ class AttendeeController extends Controller
 
     public function register(int $attendeeId, int $eventId): Response
     {
-        // Get event
         $event = Event::findOrFail($eventId);
-        // Get attendee
         $attendee = Attendee::findOrFail($attendeeId);
-        // Get event attendees
         $attendeesToEvent = EventAttendee::where(
             'event_id',
             $eventId
