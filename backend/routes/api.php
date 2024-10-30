@@ -25,7 +25,7 @@ Route::prefix('/up2you')->group(function () {
             Route::get('', [AttendeeController::class, 'get']);
             Route::put('', [AttendeeController::class, 'update']);
             Route::delete('', [AttendeeController::class, 'delete']);
+            Route::post('/register/{eventId}', [AttendeeController::class, 'register']);
         });
-        Route::post('/register/{eventId}', [AttendeeController::class, 'register']);
     });
 });
