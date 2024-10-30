@@ -34,19 +34,21 @@ return [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
             'read' => [
-                'host' => env('DB_HOST_RO', 'localhost'),
+                'host' => env('DB_HOST_RO', '127.0.0.1'),
             ],
             'write' => [
-                'host' => env('DB_HOST', 'localhost'),
+                'host' => env('DB_HOST', '127.0.0.1'),
             ],
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'test_project'),
             'username' => env('DB_USERNAME', 'user'),
             'password' => env('DB_PASSWORD', 'password'),
             'charset' => env('DB_CHARSET', 'utf8'),
-            'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => 'public',
+            'unix_socket' => env('DB_SOCKET', ''),
+            'prefix' => '',
+
         ],
 
     ],

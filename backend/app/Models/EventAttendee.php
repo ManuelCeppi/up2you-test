@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class EventAttendee extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     protected $table = 'events_attendees';
 
