@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Attendee extends Model
+class EventAttendee extends Model
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
+    protected $table = 'events_attendees';
 
     public $timestamps = false;
     /**
@@ -17,8 +18,7 @@ class Attendee extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'first_name',
-        'last_name',
-        'email'
+        'event_id',
+        'attendee_id',
     ];
 }

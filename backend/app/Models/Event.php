@@ -9,7 +9,7 @@ class Event extends Model
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
-
+    public $timestamps = false;
     /**
      * The attributes that are mass assignable.
      *

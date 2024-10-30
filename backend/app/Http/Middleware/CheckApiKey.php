@@ -3,9 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\App;
 
-class FormatResponse
+class CheckApiKey
 {
     /**
      * Handle an incoming request.
@@ -26,6 +25,6 @@ class FormatResponse
                 'errorEx' => 'Invalid API key'
             ], 401);
         }
-        $next($request);
+        return $next($request);
     }
 }

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Request\InsertAttendeeRequest;
 use App\Http\Request\UpdateAttendeeRequest;
 use App\Models\Attendee;
+use App\Models\Event;
+use App\Models\EventAttendee;
 use Illuminate\Http\Response;
 
 class AttendeeController extends Controller
@@ -43,5 +45,30 @@ class AttendeeController extends Controller
         $attendee = Attendee::findOrFail($attendeeId);
         $attendee->delete();
         return response([], 204);
+    }
+
+    public function register(int $attendeeId, int $eventId): Response
+    {
+        // Get event
+        $event = Event::findOrFail($eventId);
+        // Get attendee
+        $attendee = Attendee::findOrFail($attendeeId);
+        // Get event attendees
+        $attendeesToEvent = EventAttendee::where(
+            'event_id',
+            $eventId
+        )->count();
+
+        // Check if the event is full
+        if ($attendeesToEvent <= $event->max_attendees) {
+            // Add attendee to event
+            $eventAttendee = new EventAttendee();
+            $eventAttendee->event_id = $eventId;
+            $eventAttendee->attendee_id = $attendeeId;
+            $eventAttendee->save();
+        } else {
+            return response(['message' => 'Event is full'], 400);
+        }
+        return response(['registered' => true], 200);
     }
 }
