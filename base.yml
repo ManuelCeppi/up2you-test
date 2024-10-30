@@ -1,0 +1,77 @@
+version: "3.9"
+
+networks:
+  up2you-test-project:
+    driver: bridge
+
+services:
+  api.up2you.test.project:
+    # if not specified, compose prefixes with the network
+    container_name: api.up2you.test.project
+    # linking the docker file
+    build: "./docker/backend"
+    # the entrypoint that will be executed after the container initialization: this one is actually the one that's inside the container.
+    entrypoint: /entrypoint.sh
+    # copying all the volumes that i actually need for the container in order to work
+    volumes:
+      - ./backend/:/var/www/html
+      - ./docker/backend/entrypoint.sh:/entrypoint.sh
+    # the env file
+    env_file: 
+      - api.dev.env
+    # the other containers that this one needs and rely on to actually work
+    depends_on:
+      - db.up2you.test.project
+    # the network of the container itself
+    networks:
+      - up2you-test-project
+
+  db.up2you.test.project:
+    container_name: db.up2you.test.project
+    image: "mysql:8.0"
+    environment:
+      MYSQL_DATABASE: "test_project"
+      MYSQL_USER: "user"
+      MYSQL_PASSWORD: "password"
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    networks:
+      - up2you-test-project
+    healthcheck:
+      test:
+        ["CMD-SHELL", "MYSQL_PWD=healthcheck mysqladmin ping -u healthcheck"]
+  
+  dbmate.up2you.test.project:
+    container_name: dbmate.up2you.test.project
+    build: "./docker/migrations"
+    entrypoint: /entrypoint.sh
+    environment:      
+      MYSQL_USER: "user"
+      MYSQL_PASSWORD: "password"
+      MYSQL_ROOT_PASSWORD: "root"
+      DB_HOST: db.up2you.test.project
+      DB_PORT: 3306
+    networks:
+      - up2you-test-project
+    volumes:
+      - ./migrations:/migrations
+      - ./docker/migrations/entrypoint.sh:/entrypoint.sh
+    depends_on:
+      - db.up2you.test.project
+
+  nginx.up2you.test.project:
+    container_name: nginx.up2you.test.project
+    image: "nginx:1.21.3"
+    entrypoint: /entrypoint.sh
+    volumes:
+      - ./docker/nginx/conf.d/base.conf:/etc/nginx/conf.d/default.conf:delegated
+      - ./docker/nginx/entrypoint.sh:/entrypoint.sh:delegated
+    ports:
+      - "80:80"
+    networks:
+      - up2you-test-project
+    # health check
+    healthcheck:
+      test: ["CMD-SHELL", "curl localhost"]
